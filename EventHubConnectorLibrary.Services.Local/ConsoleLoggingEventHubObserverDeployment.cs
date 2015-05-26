@@ -13,18 +13,21 @@ namespace EventHubConnectorLibrary.Services.Local
     public class ConsoleLoggingEventHubObserverDeployment : IDeployment
     {
         private CancellationToken _cancellationToken;
+
         public async Task<bool> Deploy(CancellationToken cancellationToken)
         {
 
+            _cancellationToken = cancellationToken;
+            var eventObserver = new ConsoleLoggingEventHubObserver(new ConsoleLogger());
+            var hub = new ObservableEventHubConnection(new AppConfigConfiguration(), new ConsoleLogger());
+            hub.Subscribe(eventObserver);
+            hub.Connect();
+
+
+            //not awaited so the execution can continue off to other things.  
+            //The obsever has its own wait loop and monitors our cancel token to know when to dump
             Task.Factory.StartNew(() =>
-            {
-
-                _cancellationToken = cancellationToken;
-                var eventObserver = new ConsoleLoggingEventHubObserver(new ConsoleLogger());
-                var hub = new ObservableEventHubConnection(new AppConfigConfiguration(), new ConsoleLogger());
-                hub.Subscribe(eventObserver);
-                hub.Connect();
-
+            {         
                 while (true)
                 {
                     Task.Delay(1000).Wait();
@@ -35,7 +38,7 @@ namespace EventHubConnectorLibrary.Services.Local
                     }
                 }
 
-            });
+            }, TaskCreationOptions.LongRunning);
             return true;
         }
     }

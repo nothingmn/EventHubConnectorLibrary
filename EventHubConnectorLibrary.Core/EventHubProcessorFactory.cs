@@ -8,11 +8,13 @@ namespace EventHubConnectorLibrary.Core
     public class EventHubProcessorFactory<T> : IEventProcessorFactory, IObservable<EventData>
     {
         private readonly IConfiguration _configuration;
+        private readonly ILog _log;
 
-        public EventHubProcessorFactory(IConfiguration configuration)
+        public EventHubProcessorFactory(IConfiguration configuration, ILog log)
         {
             _configuration = configuration;
-            processor = new EventProcessor(_configuration);
+            _log = log;
+            processor = new EventProcessor(_configuration, _log);
 
         }
 

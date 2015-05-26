@@ -21,7 +21,7 @@ namespace EventHubConnectorLibrary.Core
             //var client = Microsoft.ServiceBus.Messaging.EventHubClient.CreateFromConnectionString(configuration.EventHubConnectionString, configuration.EventHubPath);            
             _host = new EventProcessorHost(Dns.GetHostName(), configuration.EventHubPath, configuration.EventHubConsumerGroup, configuration.EventHubConnectionString, configuration.BlobStorageConnectionString, configuration.LeaseContainerName);
 
-            _factory = new EventHubProcessorFactory<EventData>(_configuration);
+            _factory = new EventHubProcessorFactory<EventData>(_configuration, log);
 
             _log.Info("Observable Hub Ready...").Wait();
 
@@ -47,7 +47,7 @@ namespace EventHubConnectorLibrary.Core
             options.InvokeProcessorAfterReceiveTimeout = _configuration.InvokeProcessorAfterReceiveTimeout;
             options.PrefetchCount = _configuration.PrefetchCount;
 
-            await _log.Info("Observable Hub connecting event processor factory");
+            await _log.Info("Observable Hub connecting event processor factory, this should take about 30 seconds...");
             await _host.RegisterEventProcessorFactoryAsync(_factory, options);
 
             await _log.Info("Observable Hub connected event processor factory");
