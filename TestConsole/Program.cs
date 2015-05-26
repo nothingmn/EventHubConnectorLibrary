@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using EventHubConnectorLibrary.Core;
+﻿using EventHubConnectorLibrary.Core;
 using EventHubConnectorLibrary.Services.Local;
+using System;
+using System.Threading;
 
 namespace TestConsole
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             CancellationTokenSource source = new CancellationTokenSource();
             var token = source.Token;
 
-            var deployment = typeof (ConsoleLoggingEventHubObserverDeployment);
+            var deployment = typeof(ConsoleLoggingEventHubObserverDeployment);
             var deployed = DeploymentManager.Deploy(deployment, token).Result;
 
             if (!deployed)
@@ -25,7 +21,7 @@ namespace TestConsole
             }
 
             while (Console.ReadKey().Key != ConsoleKey.Q)
-            {                
+            {
             }
             source.Cancel();
         }

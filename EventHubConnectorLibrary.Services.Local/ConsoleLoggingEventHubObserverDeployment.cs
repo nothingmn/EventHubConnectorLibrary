@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using EventHubConnectorLibrary.Contracts;
+using EventHubConnectorLibrary.Core;
 using System.Threading;
 using System.Threading.Tasks;
-using EventHubConnectorLibrary.Contracts;
-using EventHubConnectorLibrary.Core;
 using TestConsole;
 
 namespace EventHubConnectorLibrary.Services.Local
@@ -14,20 +10,24 @@ namespace EventHubConnectorLibrary.Services.Local
     {
         private CancellationToken _cancellationToken;
 
-        public async Task<bool> Deploy(CancellationToken cancellationToken)
+        public async Task<bool> Deploy(CancellationToken cancellationToken, string[] args = null)
         {
-
             _cancellationToken = cancellationToken;
             var eventObserver = new ConsoleLoggingEventHubObserver(new ConsoleLogger());
+
+            if (args != null)
+            {
+                eventObserver.MessageFilter = string.Join(" ", args);
+            }
+
             var hub = new ObservableEventHubConnection(new AppConfigConfiguration(), new ConsoleLogger());
             hub.Subscribe(eventObserver);
-            hub.Connect();
+            await hub.Connect();
 
-
-            //not awaited so the execution can continue off to other things.  
+            //not awaited so the execution can continue off to other things.
             //The obsever has its own wait loop and monitors our cancel token to know when to dump
             Task.Factory.StartNew(() =>
-            {         
+            {
                 while (true)
                 {
                     Task.Delay(1000).Wait();
@@ -37,7 +37,6 @@ namespace EventHubConnectorLibrary.Services.Local
                         break;
                     }
                 }
-
             }, TaskCreationOptions.LongRunning);
             return true;
         }

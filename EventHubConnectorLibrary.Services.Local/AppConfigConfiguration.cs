@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EventHubConnectorLibrary.Contracts;
+﻿using EventHubConnectorLibrary.Contracts;
 using Microsoft.ServiceBus.Messaging;
+using System;
+using System.Collections.Specialized;
 
 namespace EventHubConnectorLibrary.Services.Local
 {
     public class AppConfigConfiguration : IConfiguration
     {
         private NameValueCollection appSettings = null;
-        EventProcessorOptions _defaultOptions = EventProcessorOptions.DefaultOptions;
+        private EventProcessorOptions _defaultOptions = EventProcessorOptions.DefaultOptions;
+
         public AppConfigConfiguration()
         {
             appSettings = System.Configuration.ConfigurationManager.AppSettings;
@@ -26,6 +23,11 @@ namespace EventHubConnectorLibrary.Services.Local
                 if (!string.IsNullOrEmpty(c)) return c;
                 return appSettings["Microsoft.ServiceBus.ConnectionString"];
             }
+        }
+
+        public string HostName
+        {
+            get { return System.Guid.NewGuid().ToString(); }
         }
 
         public string EventHubPath
@@ -57,15 +59,17 @@ namespace EventHubConnectorLibrary.Services.Local
                 return _defaultOptions.MaxBatchSize;
             }
         }
+
         public TimeSpan ReceiveTimeOut
         {
             get
             {
                 var c = appSettings["EventHubConnectionString"];
-                if (!string.IsNullOrEmpty(c)) return new TimeSpan(0,0,Int32.Parse(c));
+                if (!string.IsNullOrEmpty(c)) return new TimeSpan(0, 0, Int32.Parse(c));
                 return _defaultOptions.ReceiveTimeOut;
             }
         }
+
         public int PrefetchCount
         {
             get
@@ -75,7 +79,9 @@ namespace EventHubConnectorLibrary.Services.Local
                 return _defaultOptions.PrefetchCount;
             }
         }
+
         public Func<string, object> InitialOffsetProvider { get; set; }
+
         public bool InvokeProcessorAfterReceiveTimeout
         {
             get

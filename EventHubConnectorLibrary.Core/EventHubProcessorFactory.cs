@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using EventHubConnectorLibrary.Contracts;
+﻿using EventHubConnectorLibrary.Contracts;
 using Microsoft.ServiceBus.Messaging;
+using System;
+using System.Threading.Tasks;
 
 namespace EventHubConnectorLibrary.Core
 {
@@ -15,7 +15,6 @@ namespace EventHubConnectorLibrary.Core
             _configuration = configuration;
             _log = log;
             processor = new EventProcessor(_configuration, _log);
-
         }
 
         private EventProcessor processor = null;

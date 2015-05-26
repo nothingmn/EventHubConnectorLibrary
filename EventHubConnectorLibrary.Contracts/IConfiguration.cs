@@ -6,6 +6,8 @@ namespace EventHubConnectorLibrary.Contracts
     {
         string EventHubConnectionString { get; }
 
+        string HostName { get; }
+
         string EventHubPath { get; }
 
         string EventHubConsumerGroup { get; }
@@ -25,6 +27,5 @@ namespace EventHubConnectorLibrary.Contracts
         bool InvokeProcessorAfterReceiveTimeout { get; }
 
         Func<bool> CheckpointFunc { get; set; }
-
     }
 }
