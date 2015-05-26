@@ -13,7 +13,7 @@ namespace TestConsole
             var token = source.Token;
 
             var deployment = typeof(ConsoleLoggingEventHubObserverDeployment);
-            var deployed = DeploymentManager.Deploy(deployment, token).Result;
+            var deployed = DeploymentManager.Deploy(deployment, token, args).Result;
 
             if (!deployed)
             {

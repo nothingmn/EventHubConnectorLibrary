@@ -16,41 +16,46 @@ namespace TestConsole
             _log = log;
         }
 
+        private static object _lock = new object();
+
         public void OnNext(EventData value)
         {
-            var msg = System.Text.Encoding.UTF8.GetString(value.GetBytes());
-
-            bool observe = true;
-            if (!string.IsNullOrEmpty(MessageFilter))
+            lock (_lock)
             {
-                observe = msg.Contains(MessageFilter);
-            }
-            if (observe)
-            {
-                var props = new Dictionary<string, string>()
-                {
-                    {"Message", msg},
-                    {"PartitionKey", value.PartitionKey},
-                    {"Offset", value.Offset},
-                    {"SequenceNumber", value.SequenceNumber.ToString()},
-                };
-                if (value.Properties != null)
-                {
-                    foreach (var p in value.Properties)
-                    {
-                        if (!props.ContainsKey(p.Key)) props.Add(p.Key, p.Value.ToString());
-                    }
-                }
+                var msg = System.Text.Encoding.UTF8.GetString(value.GetBytes());
 
-                if (value.SystemProperties != null)
+                bool observe = true;
+                if (!string.IsNullOrEmpty(MessageFilter))
                 {
-                    foreach (var p in value.SystemProperties)
-                    {
-                        if (!props.ContainsKey(p.Key)) props.Add(p.Key, p.Value.ToString());
-                    }
+                    observe = msg.Contains(MessageFilter);
                 }
+                if (observe)
+                {
+                    var props = new Dictionary<string, string>()
+                    {
+                        {"Message", msg},
+                        {"PartitionKey", value.PartitionKey},
+                        {"Offset", value.Offset},
+                        {"SequenceNumber", value.SequenceNumber.ToString()},
+                    };
+                    if (value.Properties != null)
+                    {
+                        foreach (var p in value.Properties)
+                        {
+                            if (!props.ContainsKey(p.Key)) props.Add(p.Key, p.Value.ToString());
+                        }
+                    }
 
-                _log.Event("Message received:", props);
+                    if (value.SystemProperties != null)
+                    {
+                        foreach (var p in value.SystemProperties)
+                        {
+                            if (!props.ContainsKey(p.Key)) props.Add(p.Key, p.Value.ToString());
+                        }
+                    }
+
+                    _log.Event("Message received:", props);
+                }
             }
         }
 
