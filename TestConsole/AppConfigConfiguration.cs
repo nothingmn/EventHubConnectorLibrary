@@ -3,7 +3,7 @@ using Microsoft.ServiceBus.Messaging;
 using System;
 using System.Collections.Specialized;
 
-namespace EventHubConnectorLibrary.Services.Local
+namespace TestConsole
 {
     public class AppConfigConfiguration : IConfiguration
     {

@@ -1,9 +1,9 @@
-﻿using EventHubConnectorLibrary.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EventHubConnectorLibrary.Contracts;
 
-namespace EventHubConnectorLibrary.Services.Local
+namespace TestConsole
 {
     public class ConsoleLogger : ILog
     {

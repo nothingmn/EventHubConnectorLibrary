@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EventHubConnectorLibrary.Core
 {
-    public class EventHubProcessorFactory<T> : IEventProcessorFactory, IObservable<EventData>
+    public class EventHubProcessorFactory<T> : IEventProcessorFactory, IObservable<EventHubMessage>
     {
         private readonly IConfiguration _configuration;
         private readonly ILog _log;
@@ -30,7 +30,7 @@ namespace EventHubConnectorLibrary.Core
             processor.Disconnect();
         }
 
-        public IDisposable Subscribe(IObserver<EventData> observer)
+        public IDisposable Subscribe(IObserver<EventHubMessage> observer)
         {
             return processor.Subscribe(observer);
         }

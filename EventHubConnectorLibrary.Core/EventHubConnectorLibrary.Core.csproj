@@ -82,9 +82,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeploymentManager.cs" />
+    <Compile Include="EventHubMessage.cs" />
     <Compile Include="EventHubProcessorFactory.cs" />
     <Compile Include="EventProcessor.cs" />
+    <Compile Include="ObservableDeployment.cs" />
     <Compile Include="ObservableEventHubConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unsubscriber.cs" />

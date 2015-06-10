@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EventHubConnectorLibrary.Core
 {
-    public class EventProcessor : IEventProcessor, IObservable<EventData>
+    public class EventProcessor : IEventProcessor, IObservable<EventHubMessage>
     {
         private readonly IConfiguration _configuration;
         private readonly ILog _log;
@@ -41,9 +41,10 @@ namespace EventHubConnectorLibrary.Core
                     context.EventHubPath, context.ConsumerGroupName, context.Lease.PartitionId, messages.LongCount());
             foreach (var m in messages)
             {
+                var msg = new EventHubMessage(m);
                 foreach (var s in _subscribers)
                 {
-                    s.OnNext(m);
+                    s.OnNext(msg);
                 }
             }
 
@@ -61,26 +62,33 @@ namespace EventHubConnectorLibrary.Core
                     context.EventHubPath, context.ConsumerGroupName, context.Lease.PartitionId);
         }
 
-        private List<IObserver<EventData>> _subscribers = new List<IObserver<EventData>>();
+        private List<IObserver<EventHubMessage>> _subscribers = new List<IObserver<EventHubMessage>>();
 
         public async Task Disconnect()
         {
-            await
-                _log.Info("Disconnect Event Processor: PartitionID:{2}, EventHubPath:{0}, Consumer Group:{1}, ",
-                    _context.EventHubPath, _context.ConsumerGroupName, _context.Lease.PartitionId);
+            if (_context != null)
+            {
+                await
+                    _log.Info("Disconnect Event Processor: PartitionID:{2}, EventHubPath:{0}, Consumer Group:{1}, ",
+                        _context.EventHubPath, _context.ConsumerGroupName, _context.Lease.PartitionId);
+            }
+            else
+            {
+                await _log.Info("Disconnect Event Processor");
+            }
             foreach (var s in _subscribers)
             {
                 s.OnCompleted();
             }
         }
 
-        public IDisposable Subscribe(IObserver<EventData> observer)
+        public IDisposable Subscribe(IObserver<EventHubMessage> observer)
         {
             if (!_subscribers.Contains(observer))
             {
                 _subscribers.Add(observer);
             }
-            return new Unsubscriber<EventData>(_subscribers, observer);
+            return new Unsubscriber<EventHubMessage>(_subscribers, observer);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.22907.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventHubConnectorLibrary.Core", "EventHubConnectorLibrary.Core\EventHubConnectorLibrary.Core.csproj", "{EB8B17AF-76AD-4A25-B229-56DF3138A09A}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{B9DC6AC3-4398-4CC0-B8D1-076AE092CE0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventHubConnectorLibrary.Services.Local", "EventHubConnectorLibrary.Services.Local\EventHubConnectorLibrary.Services.Local.csproj", "{17643426-6423-41B1-9694-4E1EDCEB07C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventHubConnectorLibrary.Services.MQTT", "EventHubConnectorLibrary.Services.MQTT\EventHubConnectorLibrary.Services.MQTT.csproj", "{1C81FF0A-A214-4512-AF02-C978E0163D39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventHubConnectorLibrary.Services.MySql", "EventHubConnectorLibrary.Services.MySql\EventHubConnectorLibrary.Services.MySql.csproj", "{90327210-D44A-4037-AD15-6D485C41C5FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{17643426-6423-41B1-9694-4E1EDCEB07C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17643426-6423-41B1-9694-4E1EDCEB07C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17643426-6423-41B1-9694-4E1EDCEB07C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C81FF0A-A214-4512-AF02-C978E0163D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C81FF0A-A214-4512-AF02-C978E0163D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C81FF0A-A214-4512-AF02-C978E0163D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C81FF0A-A214-4512-AF02-C978E0163D39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90327210-D44A-4037-AD15-6D485C41C5FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90327210-D44A-4037-AD15-6D485C41C5FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90327210-D44A-4037-AD15-6D485C41C5FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90327210-D44A-4037-AD15-6D485C41C5FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

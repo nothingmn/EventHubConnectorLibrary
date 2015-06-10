@@ -1,5 +1,8 @@
-﻿using EventHubConnectorLibrary.Core;
-using EventHubConnectorLibrary.Services.Local;
+﻿using EventHubConnectorLibrary.Contracts;
+using EventHubConnectorLibrary.Core;
+using EventHubConnectorLibrary.Services.MQTT;
+using EventHubConnectorLibrary.Services.MySql;
+using Microsoft.ServiceBus.Messaging;
 using System;
 using System.Threading;
 
@@ -12,18 +15,27 @@ namespace TestConsole
             CancellationTokenSource source = new CancellationTokenSource();
             var token = source.Token;
 
-            var deployment = typeof(ConsoleLoggingEventHubObserverDeployment);
-            var deployed = DeploymentManager.Deploy(deployment, token, args).Result;
+            var config = new AppConfigConfiguration();
+            var log = new ConsoleLogger();
+            var observableHub = new ObservableEventHubConnection(config, log);
 
-            if (!deployed)
-            {
-                throw new NotSupportedException(string.Format("Could not deploy:{0}", deployment.FullName));
-            }
+            Deploy(token, args, new ConsoleLoggingEventHubObserver(log), config, log, observableHub);
+            Deploy(token, args, new MQTTObserver(log, "localhost", "{0}"), config, log, observableHub);
+            Deploy(token, args, new MySqlObserver(log, ""), config, log, observableHub);
 
-            while (Console.ReadKey().Key != ConsoleKey.Q)
-            {
-            }
+            WaitForExit();
             source.Cancel();
+        }
+
+        private static void Deploy(CancellationToken token, string[] args, IObserver<EventHubMessage> observer, AppConfigConfiguration config, ILog log, ObservableEventHubConnection observableHub)
+        {
+            var hub = new ObservableDeployment(observer, config, log, observableHub);
+            hub.Deploy(token, args);
+        }
+
+        private static void WaitForExit()
+        {
+            while (Console.ReadKey().Key != ConsoleKey.Q) { }
         }
     }
 }

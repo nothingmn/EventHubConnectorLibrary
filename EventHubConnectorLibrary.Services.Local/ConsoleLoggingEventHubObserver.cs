@@ -1,11 +1,12 @@
 ﻿using EventHubConnectorLibrary.Contracts;
+using EventHubConnectorLibrary.Core;
 using Microsoft.ServiceBus.Messaging;
 using System;
 using System.Collections.Generic;
 
 namespace TestConsole
 {
-    public class ConsoleLoggingEventHubObserver : IObserver<EventData>
+    public class ConsoleLoggingEventHubObserver : IObserver<EventHubMessage>
     {
         public string MessageFilter { get; set; }
 
@@ -18,11 +19,11 @@ namespace TestConsole
 
         private static object _lock = new object();
 
-        public void OnNext(EventData value)
+        public void OnNext(EventHubMessage value)
         {
             lock (_lock)
             {
-                var msg = System.Text.Encoding.UTF8.GetString(value.GetBytes());
+                var msg = System.Text.Encoding.UTF8.GetString(value.Body);
 
                 bool observe = true;
                 if (!string.IsNullOrEmpty(MessageFilter))

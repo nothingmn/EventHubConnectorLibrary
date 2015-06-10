@@ -63,6 +63,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Runtime.Serialization" />
@@ -79,6 +81,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppConfigConfiguration.cs" />
+    <Compile Include="ConsoleLogger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -98,6 +102,14 @@
     <ProjectReference Include="..\EventHubConnectorLibrary.Services.Local\EventHubConnectorLibrary.Services.Local.csproj">
       <Project>{17643426-6423-41B1-9694-4E1EDCEB07C9}</Project>
       <Name>EventHubConnectorLibrary.Services.Local</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EventHubConnectorLibrary.Services.MQTT\EventHubConnectorLibrary.Services.MQTT.csproj">
+      <Project>{1c81ff0a-a214-4512-af02-c978e0163d39}</Project>
+      <Name>EventHubConnectorLibrary.Services.MQTT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EventHubConnectorLibrary.Services.MySql\EventHubConnectorLibrary.Services.MySql.csproj">
+      <Project>{90327210-d44a-4037-ad15-6d485c41c5fd}</Project>
+      <Name>EventHubConnectorLibrary.Services.MySql</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
