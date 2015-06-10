@@ -1,35 +1,58 @@
 ﻿using EventHubConnectorLibrary.Contracts;
 using EventHubConnectorLibrary.Core;
 using Microsoft.ServiceBus.Messaging;
+using MySql.Data.MySqlClient;
 using System;
 
 namespace EventHubConnectorLibrary.Services.MySql
 {
     public class MySqlObserver : IObserver<EventHubMessage>
     {
+        private readonly ILog _log;
         private readonly string _connectionString;
+        private MySqlConnection _connection;
+
+        public Func<EventHubMessage, string> SqlCommandAction { get; set; }
 
         public MySqlObserver(ILog log, string connectionString)
         {
+            _log = log;
             _connectionString = connectionString;
-            //client.Connect(clientId);
+
+            _connection = new MySqlConnection(_connectionString);
+            _connection.Open();
         }
 
         public void OnNext(EventHubMessage value)
         {
-            var body = value.Body;
-            var content = System.Text.Encoding.UTF8.GetString(body);
+            if (SqlCommandAction != null)
+            {
+                var sql = SqlCommandAction(value);
+
+                if (!string.IsNullOrEmpty(sql))
+                {
+                    try
+                    {
+                        var cmd = new MySqlCommand(sql, _connection);
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+            }
+
             //client.Publish(topic, body);
         }
 
-        public void OnError(Exception error)
+        public async void OnError(Exception error)
         {
-            throw new NotImplementedException();
+            await _log.Error(error, "MqSqlObserver received an error");
         }
 
         public void OnCompleted()
         {
-            throw new NotImplementedException();
+            _connection.Close();
         }
     }
 }
