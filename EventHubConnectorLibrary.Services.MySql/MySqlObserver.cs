@@ -38,6 +38,7 @@ namespace EventHubConnectorLibrary.Services.MySql
                     }
                     catch (Exception e)
                     {
+                        _log.Error(e, "MqSqlObserver received an error, when calling OnNext").Wait();
                     }
                 }
             }
