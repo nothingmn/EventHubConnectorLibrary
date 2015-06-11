@@ -19,7 +19,7 @@ namespace TestConsole
 
             var config = new AppConfigConfiguration();
             var log = new ConsoleLogger();
-            //var observableHub = new ObservableEventHubConnection(config, log);
+            var observableHub = new ObservableEventHubConnection(config, log);
 
             //Deploy(token, args, new ConsoleLoggingEventHubObserver(log), config, log, observableHub);
             //Deploy(token, args, new MQTTObserver(log, "localhost", "{0}"), config, log, observableHub);
@@ -32,9 +32,9 @@ namespace TestConsole
                 var body = System.Text.Encoding.UTF8.GetString(message.Body);
                 var payload = JsonConvert.DeserializeObject(body);
 
-                return "insert into mytable (id, speed) VALUES('{id}', '{speed}')";
+                return string.Format("insert into mytable (id, ...) VALUES('{i}', '{speed}')", payload.Id);
             };
-            //Deploy(token, args, mySqlObserver, config, log, observableHub);
+            Deploy(token, args, mySqlObserver, config, log, observableHub);
 
             WaitForExit();
             source.Cancel();
