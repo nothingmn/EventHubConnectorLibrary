@@ -24,17 +24,19 @@ namespace TestConsole
             //Deploy(token, args, new ConsoleLoggingEventHubObserver(log), config, log, observableHub);
             //Deploy(token, args, new MQTTObserver(log, "localhost", "{0}"), config, log, observableHub);
 
-            var connectionString = "Server=192.168.1.69;Database=database;Uid=telematics;Pwd=password;";
-            var mySqlObserver = new MySqlObserver(log, connectionString);
-            mySqlObserver.SqlCommandAction = message =>
-            {
-                if (message.Body == null) return null;
-                var body = System.Text.Encoding.UTF8.GetString(message.Body);
-                var payload = JsonConvert.DeserializeObject<dynamic>(body);
+            //var connectionString = "Server=192.168.1.69;Database=database;Uid=telematics;Pwd=password;";
+            //var mySqlObserver = new MySqlObserver(log, connectionString);
+            //mySqlObserver.SqlCommandAction = message =>
+            //{
+            //    if (message.Body == null) return null;
+            //    var body = System.Text.Encoding.UTF8.GetString(message.Body);
+            //    var payload = JsonConvert.DeserializeObject<dynamic>(body);
 
-                return string.Format("insert into mytable (id, speed) VALUES('{0}', '{1}')", payload.Id, payload.Speed);
-            };
-            Deploy(token, args, mySqlObserver, config, log, observableHub);
+            //    return string.Format("insert into mytable (id, speed) VALUES('{0}', '{1}')", payload.Id, payload.Speed);
+            //};
+            //Deploy(token, args, mySqlObserver, config, log, observableHub);
+
+            Deploy(token, args, new MongoDBObserver(log, "mongodb://admin:password#1@localhost/telematics", "telematics", "vehicle"), config, log, observableHub);
 
             WaitForExit();
             source.Cancel();

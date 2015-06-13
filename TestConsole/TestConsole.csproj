@@ -103,6 +103,10 @@
       <Project>{17643426-6423-41B1-9694-4E1EDCEB07C9}</Project>
       <Name>EventHubConnectorLibrary.Services.Local</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EventHubConnectorLibrary.Services.MongoDB\EventHubConnectorLibrary.Services.MongoDB.csproj">
+      <Project>{A98BC2F4-D1D9-4DF7-B770-A17D7110931E}</Project>
+      <Name>EventHubConnectorLibrary.Services.MongoDB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EventHubConnectorLibrary.Services.MQTT\EventHubConnectorLibrary.Services.MQTT.csproj">
       <Project>{1c81ff0a-a214-4512-af02-c978e0163d39}</Project>
       <Name>EventHubConnectorLibrary.Services.MQTT</Name>
