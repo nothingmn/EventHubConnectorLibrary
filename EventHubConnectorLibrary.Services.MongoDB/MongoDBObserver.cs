@@ -33,6 +33,20 @@ namespace EventHubConnectorLibrary.Services.MySql
         {
             //var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(value.Body);
             var doc = BsonDocument.Parse(System.Text.Encoding.UTF8.GetString(value.Body));
+            if (value.Properties != null)
+            {
+                foreach (var p in value.Properties)
+                {
+                    if (!doc.Contains(p.Key)) doc.Add(new BsonElement(p.Key, p.Value.ToString()));
+                }
+            }
+            if (value.SystemProperties != null)
+            {
+                foreach (var p in value.SystemProperties)
+                {
+                    if (!doc.Contains(p.Key)) doc.Add(new BsonElement(p.Key, p.Value.ToString()));
+                }
+            }
             _documentCollection.InsertOneAsync(doc).Wait();
         }
 
