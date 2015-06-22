@@ -115,6 +115,10 @@
       <Project>{90327210-d44a-4037-ad15-6d485c41c5fd}</Project>
       <Name>EventHubConnectorLibrary.Services.MySql</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EventHubConnectorLibrary.Services.PushBullet\EventHubConnectorLibrary.Services.PushBullet.csproj">
+      <Project>{B47F88A0-0EDD-4629-ACF4-B74AD78C1090}</Project>
+      <Name>EventHubConnectorLibrary.Services.PushBullet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

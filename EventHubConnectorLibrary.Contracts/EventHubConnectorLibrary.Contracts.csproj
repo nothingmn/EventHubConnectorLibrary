@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="IConfiguration.cs" />
     <Compile Include="IDeployment.cs" />
+    <Compile Include="IFilter.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

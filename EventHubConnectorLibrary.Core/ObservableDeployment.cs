@@ -29,6 +29,11 @@ namespace EventHubConnectorLibrary.Core
 
         public async Task<bool> Deploy(CancellationToken cancellationToken, string[] args = null)
         {
+            if (_observer is IFilter)
+            {
+                (_observer as IFilter).Filter = string.Join(" ", args);
+            }
+
             _cancellationToken = cancellationToken;
 
             _hub.Subscribe(_observer);

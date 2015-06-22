@@ -10,7 +10,7 @@ using uPLibrary.Networking.M2Mqtt;
 
 namespace EventHubConnectorLibrary.Services.MQTT
 {
-    public class MQTTObserver : IObserver<EventHubMessage>
+    public class MQTTObserver : IObserver<EventHubMessage>, IFilter
     {
         private readonly ILog _log;
         private readonly string _topicFormat;
@@ -32,6 +32,12 @@ namespace EventHubConnectorLibrary.Services.MQTT
         {
             var body = value.Body;
             var content = System.Text.Encoding.UTF8.GetString(body);
+
+            if (!string.IsNullOrEmpty(Filter))
+            {
+                if (!content.Contains(Filter)) return;
+            }
+
             var topic = string.Format(_topicFormat, value.PartitionKey);
             client.Publish(topic, body);
         }
@@ -45,5 +51,7 @@ namespace EventHubConnectorLibrary.Services.MQTT
         {
             throw new NotImplementedException();
         }
+
+        public string Filter { get; set; }
     }
 }
