@@ -24,8 +24,8 @@ namespace TestConsole
             var log = new ConsoleLogger();
             var observableHub = new ObservableEventHubConnection(config, log);
 
-            //Deploy(token, args, new ConsoleLoggingEventHubObserver(log), config, log, observableHub);
-            //Deploy(token, args, new MQTTObserver(log, "localhost", "{0}"), config, log, observableHub);
+            Deploy(token, args, new ConsoleLoggingEventHubObserver(log), config, log, observableHub);
+            Deploy(token, args, new MQTTObserver(log, config.MQTTBroker, "vehicle/{0}"), config, log, observableHub);
             //Deploy(token, args, new MongoDBObserver(log, System.Configuration.ConfigurationManager.AppSettings["MongoConnectionString"], System.Configuration.ConfigurationManager.AppSettings["MongoDatabase"], System.Configuration.ConfigurationManager.AppSettings["MongoCollection"]), config, log, observableHub);
 
             //var connectionString = "Server=192.168.1.69;Database=database;Uid=telematics;Pwd=password;";
@@ -40,9 +40,9 @@ namespace TestConsole
             //};
             //Deploy(token, args, mySqlObserver, config, log, observableHub);
 
-            var pb = new PushBulletObserver(log, System.Configuration.ConfigurationManager.AppSettings["PushBulletAPIKey"]);
-            pb.HubToNoteFunc = HubToNoteFunc;
-            Deploy(token, args, pb, config, log, observableHub);
+            //var pb = new PushBulletObserver(log, System.Configuration.ConfigurationManager.AppSettings["PushBulletAPIKey"]);
+            //pb.HubToNoteFunc = HubToNoteFunc;
+            //Deploy(token, args, pb, config, log, observableHub);
 
             WaitForExit();
             source.Cancel();

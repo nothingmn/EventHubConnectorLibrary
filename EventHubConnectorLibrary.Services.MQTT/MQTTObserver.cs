@@ -24,8 +24,14 @@ namespace EventHubConnectorLibrary.Services.MQTT
             _log = log;
             _topicFormat = topicFormat;
             client = new MqttClient(host);
+            client.ConnectionClosed += Client_ConnectionClosed;
             string clientId = System.Guid.NewGuid().ToString();
             client.Connect(clientId);
+        }
+
+        private void Client_ConnectionClosed(object sender, EventArgs e)
+        {
+            this.OnError(new Exception(sender.ToString()));
         }
 
         public void OnNext(EventHubMessage value)

@@ -50,6 +50,11 @@ namespace TestConsole
             get { return appSettings["LeaseContainerName"]; }
         }
 
+        public string MQTTBroker
+        {
+            get { return appSettings["MQTTBroker"]; }
+        }
+
         public int MaxBatchSize
         {
             get
