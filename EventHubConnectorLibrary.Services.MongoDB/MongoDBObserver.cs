@@ -4,6 +4,7 @@ using Microsoft.ServiceBus.Messaging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Threading.Tasks;
 
 namespace EventHubConnectorLibrary.Services.MySql
 {
@@ -29,7 +30,7 @@ namespace EventHubConnectorLibrary.Services.MySql
             _documentCollection = _database.GetCollection<BsonDocument>(collection);
         }
 
-        public void OnNext(EventHubMessage value)
+        public async void OnNext(EventHubMessage value)
         {
             //var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(value.Body);
             var doc = BsonDocument.Parse(System.Text.Encoding.UTF8.GetString(value.Body));
@@ -47,7 +48,19 @@ namespace EventHubConnectorLibrary.Services.MySql
                     if (!doc.Contains(p.Key)) doc.Add(new BsonElement(p.Key, p.Value.ToString()));
                 }
             }
-            _documentCollection.InsertOneAsync(doc).Wait();
+            bool success = false;
+            while (!success)
+            {
+                try
+                {
+                    await _documentCollection.InsertOneAsync(doc);
+                    success = true;
+                }
+                catch (Exception)
+                {
+                    await Task.Delay(500);
+                }
+            }
         }
 
         public async void OnError(Exception error)
