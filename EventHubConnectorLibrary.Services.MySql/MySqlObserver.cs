@@ -6,7 +6,7 @@ using System;
 
 namespace EventHubConnectorLibrary.Services.MySql
 {
-    public class MySqlObserver : IObserver<EventHubMessage>
+    public class MySqlObserver : IObserver<EventHubMessage>, IFilter
     {
         private readonly ILog _log;
         private readonly string _connectionString;
@@ -25,6 +25,17 @@ namespace EventHubConnectorLibrary.Services.MySql
 
         public void OnNext(EventHubMessage value)
         {
+            var content = System.Text.Encoding.UTF8.GetString(value.Body);
+
+            if (Filter != null && Filter.Length > 0)
+            {
+                foreach (var f in Filter)
+                {
+                    //YOU SHALL NOT PASS
+                    if (!content.Contains(f)) return;
+                }
+            }
+
             if (SqlCommandAction != null)
             {
                 var sql = SqlCommandAction(value);
@@ -55,5 +66,7 @@ namespace EventHubConnectorLibrary.Services.MySql
         {
             _connection.Close();
         }
+
+        public string[] Filter { get; set; }
     }
 }

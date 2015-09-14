@@ -29,9 +29,10 @@ namespace EventHubConnectorLibrary.Services.PushBullet
             var body = value.Body;
             var content = System.Text.Encoding.UTF8.GetString(body);
 
-            if (!string.IsNullOrEmpty(Filter))
+            foreach (var f in Filter)
             {
-                if (!content.Contains(Filter)) return;
+                //YOU SHALL NOT PASS
+                if (!string.IsNullOrEmpty(f) && !content.Contains(f)) return;
             }
             var note = HubToNoteFunc(content);
             if (note != null)
@@ -67,6 +68,6 @@ namespace EventHubConnectorLibrary.Services.PushBullet
             return await c.PostAsync("https://api.pushbullet.com/v2/pushes", content);
         }
 
-        public string Filter { get; set; }
+        public string[] Filter { get; set; }
     }
 }

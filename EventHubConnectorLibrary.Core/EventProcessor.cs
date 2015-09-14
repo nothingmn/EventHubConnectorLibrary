@@ -39,14 +39,33 @@ namespace EventHubConnectorLibrary.Core
                 _log.Info(
                     "Processing Events: PartitionID:{2}, EventHubPath:{0}, Consumer Group:{1}, Message Count:{3}",
                     context.EventHubPath, context.ConsumerGroupName, context.Lease.PartitionId, messages.LongCount());
-            foreach (var m in messages)
+
+            var eventDatas = messages as IList<EventData> ?? messages.ToList();
+            var partitionedMessages = eventDatas.GroupBy(data => data.PartitionKey).ToDictionary(datas => datas.Key, datas => datas.ToList());
+
+            await Task.WhenAll(partitionedMessages.Select(partition => Task.Run(() =>
             {
-                var msg = new EventHubMessage(m);
-                foreach (var s in _subscribers)
+                var block = partition.Value;
+                foreach (var eventData in block)
                 {
-                    s.OnNext(msg);
+                    var d = eventData;
+                    try
+                    {
+                        var msg = new EventHubMessage(d);
+                        foreach (var s in _subscribers)
+                        {
+                            s.OnNext(msg);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        foreach (var s in _subscribers)
+                        {
+                            s.OnError(e);
+                        }
+                    }
                 }
-            }
+            })));
 
             var performCheckpoint = _configuration.CheckpointFunc();
             if (performCheckpoint)

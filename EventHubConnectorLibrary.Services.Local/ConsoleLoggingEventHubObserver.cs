@@ -1,15 +1,12 @@
 ﻿using EventHubConnectorLibrary.Contracts;
 using EventHubConnectorLibrary.Core;
-using Microsoft.ServiceBus.Messaging;
 using System;
 using System.Collections.Generic;
 
-namespace TestConsole
+namespace EventHubConnectorLibrary.Services.Local
 {
-    public class ConsoleLoggingEventHubObserver : IObserver<EventHubMessage>
+    public class ConsoleLoggingEventHubObserver : IObserver<EventHubMessage>, IFilter
     {
-        public string MessageFilter { get; set; }
-
         private readonly ILog _log;
 
         public ConsoleLoggingEventHubObserver(ILog log)
@@ -25,38 +22,39 @@ namespace TestConsole
             {
                 var msg = System.Text.Encoding.UTF8.GetString(value.Body);
 
-                bool observe = true;
-                if (!string.IsNullOrEmpty(MessageFilter))
+                if (Filter != null && Filter.Length > 0)
                 {
-                    observe = msg.Contains(MessageFilter);
+                    foreach (var f in Filter)
+                    {
+                        //YOU SHALL NOT PASS
+                        if (!msg.Contains(f)) return;
+                    }
                 }
-                if (observe)
+
+                var props = new Dictionary<string, string>()
                 {
-                    var props = new Dictionary<string, string>()
+                    {"Message", msg},
+                    {"PartitionKey", value.PartitionKey},
+                    {"Offset", value.Offset},
+                    {"SequenceNumber", value.SequenceNumber.ToString()},
+                };
+                if (value.Properties != null)
+                {
+                    foreach (var p in value.Properties)
                     {
-                        {"Message", msg},
-                        {"PartitionKey", value.PartitionKey},
-                        {"Offset", value.Offset},
-                        {"SequenceNumber", value.SequenceNumber.ToString()},
-                    };
-                    if (value.Properties != null)
-                    {
-                        foreach (var p in value.Properties)
-                        {
-                            if (!props.ContainsKey(p.Key)) props.Add(p.Key, p.Value.ToString());
-                        }
+                        if (!props.ContainsKey(p.Key)) props.Add(p.Key, p.Value.ToString());
                     }
-
-                    if (value.SystemProperties != null)
-                    {
-                        foreach (var p in value.SystemProperties)
-                        {
-                            if (!props.ContainsKey(p.Key)) props.Add(p.Key, p.Value.ToString());
-                        }
-                    }
-
-                    _log.Event("Message received:", props);
                 }
+
+                if (value.SystemProperties != null)
+                {
+                    foreach (var p in value.SystemProperties)
+                    {
+                        if (!props.ContainsKey(p.Key)) props.Add(p.Key, p.Value.ToString());
+                    }
+                }
+
+                _log.Event("Message received:", props);
             }
         }
 
@@ -69,5 +67,7 @@ namespace TestConsole
         {
             _log.Info("Disconnecting");
         }
+
+        public string[] Filter { get; set; }
     }
 }

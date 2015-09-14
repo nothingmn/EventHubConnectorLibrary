@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EventHubConnectorLibrary.Services.MySql
 {
-    public class MongoDBObserver : IObserver<EventHubMessage>
+    public class MongoDBObserver : IObserver<EventHubMessage>, IFilter
     {
         private readonly ILog _log;
         private readonly string _connectionString;
@@ -33,7 +33,18 @@ namespace EventHubConnectorLibrary.Services.MySql
         public async void OnNext(EventHubMessage value)
         {
             //var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(value.Body);
-            var doc = BsonDocument.Parse(System.Text.Encoding.UTF8.GetString(value.Body));
+            var msg = System.Text.Encoding.UTF8.GetString(value.Body);
+
+            if (Filter != null && Filter.Length > 0)
+            {
+                foreach (var f in Filter)
+                {
+                    //YOU SHALL NOT PASS
+                    if (!msg.Contains(f)) return;
+                }
+            }
+
+            var doc = BsonDocument.Parse(msg);
             if (value.Properties != null)
             {
                 foreach (var p in value.Properties)
@@ -49,7 +60,8 @@ namespace EventHubConnectorLibrary.Services.MySql
                 }
             }
             bool success = false;
-            while (!success)
+            int count = 0;
+            while (!success || count > 5)
             {
                 try
                 {
@@ -59,6 +71,7 @@ namespace EventHubConnectorLibrary.Services.MySql
                 catch (Exception)
                 {
                     await Task.Delay(500);
+                    count++;
                 }
             }
         }
@@ -71,5 +84,7 @@ namespace EventHubConnectorLibrary.Services.MySql
         public void OnCompleted()
         {
         }
+
+        public string[] Filter { get; set; }
     }
 }

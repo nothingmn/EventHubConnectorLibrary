@@ -39,9 +39,13 @@ namespace EventHubConnectorLibrary.Services.MQTT
             var body = value.Body;
             var content = System.Text.Encoding.UTF8.GetString(body);
 
-            if (!string.IsNullOrEmpty(Filter))
+            if (Filter != null && Filter.Length > 0)
             {
-                if (!content.Contains(Filter)) return;
+                foreach (var f in Filter)
+                {
+                    //YOU SHALL NOT PASS
+                    if (!content.Contains(f)) return;
+                }
             }
 
             var topic = string.Format(_topicFormat, value.PartitionKey);
@@ -58,6 +62,6 @@ namespace EventHubConnectorLibrary.Services.MQTT
             throw new NotImplementedException();
         }
 
-        public string Filter { get; set; }
+        public string[] Filter { get; set; }
     }
 }

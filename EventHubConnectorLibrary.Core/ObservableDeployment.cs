@@ -31,7 +31,7 @@ namespace EventHubConnectorLibrary.Core
         {
             if (_observer is IFilter)
             {
-                (_observer as IFilter).Filter = string.Join(" ", args);
+                (_observer as IFilter).Filter = args;
             }
 
             _cancellationToken = cancellationToken;
